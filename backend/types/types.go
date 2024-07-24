@@ -9,7 +9,7 @@ type PostgresConfig struct {
 
 type User struct {
 	Id        string `json:"id"`
-	Name      string `json:"name"`
+	Username  string `json:"username"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Password  string `json:"password"`
@@ -17,7 +17,7 @@ type User struct {
 }
 
 type UserRequestBody struct {
-	Name      string `json:"name"`
+	Username  string `json:"username"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Password  string `json:"password"`
@@ -25,7 +25,7 @@ type UserRequestBody struct {
 }
 
 type UserResponseBody struct {
-	Name      string `json:"name"`
+	Username  string `json:"username"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
