@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/OlyMahmudMugdho/url-shortener/types"
+	_ "github.com/lib/pq"
 )
 
 func ConnectToDatabase() bool {
