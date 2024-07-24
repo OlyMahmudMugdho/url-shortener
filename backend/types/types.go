@@ -15,3 +15,11 @@ type User struct {
 	Password  string `json:"password"`
 	Email     string `json:"email"`
 }
+
+type UserRequestBody struct {
+	Name      string `json:"name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Password  string `json:"password"`
+	Email     string `json:"email"`
+}
