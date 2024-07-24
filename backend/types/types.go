@@ -23,3 +23,10 @@ type UserRequestBody struct {
 	Password  string `json:"password"`
 	Email     string `json:"email"`
 }
+
+type UserResponseBody struct {
+	Name      string `json:"name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+}
