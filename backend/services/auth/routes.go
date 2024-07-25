@@ -24,10 +24,11 @@ func (h AuthHandler) RegisterRoutes(router *http.ServeMux) {
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	user := new(types.User)
-	userBody := new(types.UserRequestBody)
 
+	userBody := new(types.UserRequestBody)
 	json.NewDecoder(r.Body).Decode(&userBody)
+
+	user := utils.GetUserFromUserRequest(userBody)
 
 	hashedPassword, err := utils.HashPassword(userBody.Password)
 
@@ -36,18 +37,14 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500) // internal server error
 	}
 
-	user.Username = userBody.Username
 	user.Password = string(hashedPassword)
-	user.Email = userBody.Email
-	user.FirstName = userBody.FirstName
-	user.LastName = userBody.LastName
 
-	error := h.SaveUser(*user)
+	error := h.SaveUser(user)
 
 	if error != nil {
 		log.Println(error)
 		w.WriteHeader(403) // unauthenticated
 	} else {
-		json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(*user))
+		json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(user))
 	}
 }
