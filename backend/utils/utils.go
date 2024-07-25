@@ -31,3 +31,8 @@ func ConnectToDatabase() (*sql.DB, error) {
 func HashPassword(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), 10)
 }
+
+func IsPassWordValid(password string, hash string) bool {
+	error := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return error == nil
+}
