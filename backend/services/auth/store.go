@@ -3,7 +3,6 @@ package auth
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
 	"github.com/OlyMahmudMugdho/url-shortener/types"
 )
@@ -25,7 +24,6 @@ func (a *AuthHandler) SaveUser(user types.User) error {
 	_, error := a.store.db.Exec(query)
 
 	if error != nil {
-		log.Fatal(error)
 		return error
 	}
 	return nil
