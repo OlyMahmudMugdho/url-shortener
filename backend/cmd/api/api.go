@@ -1,13 +1,35 @@
 package api
 
-import "database/sql"
+import (
+	"database/sql"
+	"log"
+	"net/http"
+
+	"github.com/OlyMahmudMugdho/gotenv/gotenv"
+	"github.com/OlyMahmudMugdho/url-shortener/utils"
+)
 
 type ApiServer struct {
-	db *sql.DB
+	port   string
+	router *http.ServeMux
+	db     *sql.DB
 }
 
-func NewApiServer(db *sql.DB) *ApiServer {
+func NewApiServer(port string) *ApiServer {
+	gotenv.Load()
+
+	db, error := utils.ConnectToDatabase()
+
+	if error != nil {
+		log.Fatal(`error connecting to database`)
+		return nil
+	}
+
+	router := http.NewServeMux()
+
 	return &ApiServer{
-		db: db,
+		port:   port,
+		db:     db,
+		router: router,
 	}
 }
