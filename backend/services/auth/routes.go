@@ -37,7 +37,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	error := h.SaveUser(*user)
 
 	if error != nil {
-		log.Fatal(error)
+		log.Println(error)
 		w.WriteHeader(403)
 	} else {
 		json.NewEncoder(w).Encode(userBody)
