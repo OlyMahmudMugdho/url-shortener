@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func ConnectToDatabase() bool {
+func ConnectToDatabase() (*sql.DB, error) {
 	var config types.PostgresConfig = types.PostgresConfig{
 		Username: os.Getenv("POSTGRES_USERNAME"),
 		Password: os.Getenv("POSTGRES_PASSWORD"),
@@ -17,12 +17,12 @@ func ConnectToDatabase() bool {
 		Sslmode:  os.Getenv("POSTGRES_SSLMODE"),
 	}
 	var connStr string = "user=" + config.Username + " password=" + config.Password + " dbname=" + config.Db + " sslmode=" + config.Sslmode
-	_, error := sql.Open("postgres", connStr)
+	db, error := sql.Open("postgres", connStr)
 
 	if error != nil {
 		fmt.Println(error)
-		return false
+		return nil, error
 	} else {
-		return true
+		return db, nil
 	}
 }
