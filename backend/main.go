@@ -1,15 +1,10 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/OlyMahmudMugdho/gotenv/gotenv"
-	"github.com/OlyMahmudMugdho/url-shortener/utils"
+	"github.com/OlyMahmudMugdho/url-shortener/cmd/api"
 )
 
 func main() {
-	gotenv.Load()
-	if utils.ConnectToDatabase() {
-		fmt.Println("connected to the database")
-	}
+	server := api.NewApiServer(":8080")
+	server.Run()
 }
