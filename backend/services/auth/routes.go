@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/OlyMahmudMugdho/url-shortener/types"
+	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
 
 type AuthHandler struct {
@@ -28,8 +29,15 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&userBody)
 
+	hashedPassword, err := utils.HashPassword(userBody.Password)
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500) // internal server error
+	}
+
 	user.Username = userBody.Username
-	user.Password = userBody.Password
+	user.Password = string(hashedPassword)
 	user.Email = userBody.Email
 	user.FirstName = userBody.FirstName
 	user.LastName = userBody.LastName
@@ -38,7 +46,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	if error != nil {
 		log.Println(error)
-		w.WriteHeader(403)
+		w.WriteHeader(403) // unauthenticated
 	} else {
 		json.NewEncoder(w).Encode(userBody)
 	}
