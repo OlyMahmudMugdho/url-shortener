@@ -19,7 +19,7 @@ func NewAuthHandler(store *AuthStore) *AuthHandler {
 	}
 }
 
-func (h AuthHandler) RegisterRoutes(router *http.ServeMux) {
+func (h *AuthHandler) RegisterRoutes(router *http.ServeMux) {
 	router.HandleFunc("POST /register", h.Register)
 }
 
