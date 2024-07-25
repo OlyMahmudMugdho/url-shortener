@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -17,8 +18,15 @@ func NewAuthHandler(store *AuthStore) *AuthHandler {
 	}
 }
 
-func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request, userBody types.UserRequestBody) any {
+func (h AuthHandler) RegisterRoutes(router *http.ServeMux) {
+	router.HandleFunc("POST /register", h.Register)
+}
+
+func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	user := new(types.User)
+	userBody := new(types.UserRequestBody)
+
+	json.NewDecoder(r.Body).Decode(&userBody)
 
 	user.Username = userBody.Username
 	user.Password = userBody.Password
@@ -31,8 +39,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request, userBody 
 	if error != nil {
 		log.Fatal(error)
 		w.WriteHeader(403)
-		return nil
 	} else {
-		return userBody
+		json.NewEncoder(w).Encode(userBody)
 	}
 }
