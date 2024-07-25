@@ -7,6 +7,7 @@ import (
 
 	"github.com/OlyMahmudMugdho/url-shortener/types"
 	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func ConnectToDatabase() (*sql.DB, error) {
@@ -25,4 +26,8 @@ func ConnectToDatabase() (*sql.DB, error) {
 	} else {
 		return db, nil
 	}
+}
+
+func HashPassword(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(password), 10)
 }
