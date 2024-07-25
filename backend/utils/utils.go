@@ -36,3 +36,14 @@ func IsPassWordValid(password string, hash string) bool {
 	error := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return error == nil
 }
+
+func GenerateUserResponseFromUser(user types.User) types.UserResponseBody {
+	userResponse := new(types.UserResponseBody)
+
+	userResponse.Username = user.Username
+	userResponse.Email = user.Email
+	userResponse.FirstName = user.FirstName
+	userResponse.LastName = user.LastName
+
+	return *userResponse
+}
