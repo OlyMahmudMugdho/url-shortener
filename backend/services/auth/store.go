@@ -19,7 +19,7 @@ func NewAuthStore(db *sql.DB) *AuthStore {
 
 func (a *AuthHandler) SaveUser(user types.User) error {
 
-	var query string = fmt.Sprintf(`INSERT INTO users (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL) VALUES ('%s','%s','%s','%s','%s')`, user.Username, user.Password, user.FirstName, user.LastName, user.LastName)
+	var query string = fmt.Sprintf(`INSERT INTO users (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL) VALUES ('%s','%s','%s','%s','%s')`, user.Username, user.Password, user.FirstName, user.LastName, user.Email)
 
 	_, error := a.store.db.Exec(query)
 
