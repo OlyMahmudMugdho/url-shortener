@@ -47,3 +47,15 @@ func GenerateUserResponseFromUser(user types.User) types.UserResponseBody {
 
 	return *userResponse
 }
+
+func GetUserFromUserRequest(userRequest *types.UserRequestBody) types.User {
+	user := new(types.User)
+
+	user.Username = userRequest.Username
+	user.Password = userRequest.Password
+	user.Email = userRequest.Email
+	user.FirstName = userRequest.FirstName
+	user.LastName = userRequest.LastName
+
+	return *user
+}
