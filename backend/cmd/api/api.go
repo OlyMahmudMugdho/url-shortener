@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 
 	"github.com/OlyMahmudMugdho/gotenv/gotenv"
@@ -18,12 +17,7 @@ type ApiServer struct {
 func NewApiServer(port string) *ApiServer {
 	gotenv.Load()
 
-	db, error := utils.ConnectToDatabase()
-
-	if error != nil {
-		log.Fatal(`error connecting to database`)
-		return nil
-	}
+	db, _ := utils.ConnectToDatabase()
 
 	router := http.NewServeMux()
 
