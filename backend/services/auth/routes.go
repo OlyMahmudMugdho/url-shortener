@@ -48,6 +48,6 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		log.Println(error)
 		w.WriteHeader(403) // unauthenticated
 	} else {
-		json.NewEncoder(w).Encode(userBody)
+		json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(*user))
 	}
 }
