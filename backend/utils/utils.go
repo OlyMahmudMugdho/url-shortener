@@ -3,6 +3,7 @@ package utils
 import (
 	"database/sql"
 	"fmt"
+	"github.com/OlyMahmudMugdho/url-shortener/models"
 	"os"
 
 	"github.com/OlyMahmudMugdho/url-shortener/types"
@@ -11,18 +12,18 @@ import (
 )
 
 func ConnectToDatabase() (*sql.DB, error) {
-	var config types.PostgresConfig = types.PostgresConfig{
+	var config = types.PostgresConfig{
 		Username: os.Getenv("POSTGRES_USERNAME"),
 		Password: os.Getenv("POSTGRES_PASSWORD"),
 		Db:       os.Getenv("POSTGRES_DBNAME"),
 		Sslmode:  os.Getenv("POSTGRES_SSLMODE"),
 	}
-	var connStr string = "user=" + config.Username + " password=" + config.Password + " dbname=" + config.Db + " sslmode=" + config.Sslmode
-	db, error := sql.Open("postgres", connStr)
+	var connStr = "user=" + config.Username + " password=" + config.Password + " dbname=" + config.Db + " sslmode=" + config.Sslmode
+	db, err := sql.Open("postgres", connStr)
 
-	if error != nil {
-		fmt.Println(error)
-		return nil, error
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
 	} else {
 		return db, nil
 	}
@@ -33,12 +34,12 @@ func HashPassword(password string) ([]byte, error) {
 }
 
 func IsPassWordValid(password string, hash string) bool {
-	error := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return error == nil
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
-func GenerateUserResponseFromUser(user types.User) types.UserResponseBody {
-	userResponse := new(types.UserResponseBody)
+func GenerateUserResponseFromUser(user models.User) models.UserResponseBody {
+	userResponse := new(models.UserResponseBody)
 
 	userResponse.Username = user.Username
 	userResponse.Email = user.Email
@@ -48,8 +49,8 @@ func GenerateUserResponseFromUser(user types.User) types.UserResponseBody {
 	return *userResponse
 }
 
-func GetUserFromUserRequest(userRequest *types.UserRequestBody) types.User {
-	user := new(types.User)
+func GetUserFromUserRequest(userRequest *models.UserRequestBody) models.User {
+	user := new(models.User)
 
 	user.Username = userRequest.Username
 	user.Password = userRequest.Password
