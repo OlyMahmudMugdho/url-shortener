@@ -3,6 +3,7 @@ package utils
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -75,4 +76,14 @@ func GenerateJWT(username string) (string, error) {
 	tokenStr, err := token.SignedString([]byte(secret))
 
 	return tokenStr, err
+}
+
+func ExtractToken(cookieName string, cookies []*http.Cookie) string {
+	var token string
+	for _, v := range cookies {
+		if v.Name == "token" {
+			token = v.Value
+		}
+	}
+	return token
 }
