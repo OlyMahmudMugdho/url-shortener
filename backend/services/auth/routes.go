@@ -22,6 +22,7 @@ func NewAuthHandler(store *AuthStore) *AuthHandler {
 
 func (h *AuthHandler) RegisterRoutes(router *http.ServeMux) {
 	router.HandleFunc("POST /register", h.Register)
+	router.HandleFunc("POST /login", h.Login)
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +44,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	user.Password = string(hashedPassword)
 
-	err2 := h.SaveUser(user)
+	err2 := h.store.SaveUser(user)
 
 	if err2 != nil {
 		log.Println(err2)
@@ -54,4 +55,53 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
+	loginRequest := new(models.LoginRequest)
+
+	json.NewDecoder(r.Body).Decode(&loginRequest)
+
+	user, err := h.store.FindUserByUserName(loginRequest.Username)
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(404)
+		return
+	}
+
+	var validPassword bool = utils.IsPassWordValid(loginRequest.Password, user.Password)
+
+	if !validPassword {
+		w.WriteHeader(403)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "invalid credentials",
+		})
+		return
+	}
+
+	token, tokenErr := utils.GenerateJWT(user.Username)
+
+	if tokenErr != nil {
+		log.Println(tokenErr)
+		w.WriteHeader(500)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "error generating token",
+		})
+		return
+	}
+
+	cookie := &http.Cookie{
+		Name:     "token",
+		Value:    token,
+		HttpOnly: true,
+		Path:     "/",
+	}
+
+	http.SetCookie(w, cookie)
+
+	w.WriteHeader(200)
+	json.NewEncoder(w).Encode(models.LoginResponse{
+		Token: token,
+	})
 }
