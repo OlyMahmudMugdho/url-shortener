@@ -2,10 +2,10 @@ package auth
 
 import (
 	"encoding/json"
+	"github.com/OlyMahmudMugdho/url-shortener/models"
 	"log"
 	"net/http"
 
-	"github.com/OlyMahmudMugdho/url-shortener/types"
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
 
@@ -25,8 +25,11 @@ func (h *AuthHandler) RegisterRoutes(router *http.ServeMux) {
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
-	userBody := new(types.UserRequestBody)
-	json.NewDecoder(r.Body).Decode(&userBody)
+	userBody := new(models.UserRequestBody)
+	err := json.NewDecoder(r.Body).Decode(&userBody)
+	if err != nil {
+		return
+	}
 
 	user := utils.GetUserFromUserRequest(userBody)
 
@@ -34,17 +37,20 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(500) // internal server error
+		w.WriteHeader(500) // internal server err2
 	}
 
 	user.Password = string(hashedPassword)
 
-	error := h.SaveUser(user)
+	err2 := h.SaveUser(user)
 
-	if error != nil {
-		log.Println(error)
+	if err2 != nil {
+		log.Println(err2)
 		w.WriteHeader(403) // unauthenticated
 	} else {
-		json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(user))
+		err := json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(user))
+		if err != nil {
+			return
+		}
 	}
 }

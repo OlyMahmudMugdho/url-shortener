@@ -3,8 +3,7 @@ package auth
 import (
 	"database/sql"
 	"fmt"
-
-	"github.com/OlyMahmudMugdho/url-shortener/types"
+	"github.com/OlyMahmudMugdho/url-shortener/models"
 )
 
 type AuthStore struct {
@@ -17,11 +16,11 @@ func NewAuthStore(db *sql.DB) *AuthStore {
 	}
 }
 
-func (a *AuthHandler) SaveUser(user types.User) error {
+func (h *AuthHandler) SaveUser(user models.User) error {
 
 	var query string = fmt.Sprintf(`INSERT INTO users (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL) VALUES ('%s','%s','%s','%s','%s')`, user.Username, user.Password, user.FirstName, user.LastName, user.Email)
 
-	_, error := a.store.db.Exec(query)
+	_, error := h.store.db.Exec(query)
 
 	if error != nil {
 		return error
