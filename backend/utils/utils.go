@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/OlyMahmudMugdho/url-shortener/models"
+	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/OlyMahmudMugdho/url-shortener/types"
 	_ "github.com/lib/pq"
@@ -60,4 +62,17 @@ func GetUserFromUserRequest(userRequest *models.UserRequestBody) models.User {
 	user.LastName = userRequest.LastName
 
 	return *user
+}
+
+func GenerateJWT(username string) (string, error) {
+	secret := os.Getenv("JWT_SECRET")
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.MapClaims{
+		"username": username,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	tokenStr, err := token.SignedString([]byte(secret))
+
+	return tokenStr, err
 }
