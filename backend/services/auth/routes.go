@@ -2,9 +2,10 @@ package auth
 
 import (
 	"encoding/json"
-	"github.com/OlyMahmudMugdho/url-shortener/models"
 	"log"
 	"net/http"
+
+	"github.com/OlyMahmudMugdho/url-shortener/models"
 
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
