@@ -7,31 +7,31 @@ import (
 	"github.com/OlyMahmudMugdho/url-shortener/models"
 )
 
-type AuthStore struct {
+type Store struct {
 	db *sql.DB
 }
 
-func NewAuthStore(db *sql.DB) *AuthStore {
-	return &AuthStore{
+func NewAuthStore(db *sql.DB) *Store {
+	return &Store{
 		db: db,
 	}
 }
 
-func (h *AuthStore) SaveUser(user models.User) error {
+func (h *Store) SaveUser(user models.User) error {
 
-	var query string = fmt.Sprintf(`INSERT INTO users (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL) VALUES ('%s','%s','%s','%s','%s')`, user.Username, user.Password, user.FirstName, user.LastName, user.Email)
+	var query = fmt.Sprintf(`INSERT INTO users (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL) VALUES ('%s','%s','%s','%s','%s')`, user.Username, user.Password, user.FirstName, user.LastName, user.Email)
 
-	_, error := h.db.Exec(query)
+	_, err := h.db.Exec(query)
 
-	if error != nil {
-		return error
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-func (h *AuthStore) FindUserByUserName(username string) (models.User, error) {
+func (h *Store) FindUserByUserName(username string) (models.User, error) {
 	user := new(models.User)
-	var query string = `SELECT * FROM "users" WHERE USERNAME=$1`
+	var query = `SELECT * FROM "users" WHERE USERNAME=$1`
 	row := h.db.QueryRow(query, username)
 	err := row.Scan(&user.Id, &user.Username, &user.Password, &user.FirstName, &user.LastName, &user.Email)
 

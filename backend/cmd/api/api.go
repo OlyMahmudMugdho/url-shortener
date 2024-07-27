@@ -13,32 +13,35 @@ import (
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
 
-type ApiServer struct {
+type Server struct {
 	port   string
 	router *http.ServeMux
 	db     *sql.DB
 }
 
-func NewApiServer(port string) *ApiServer {
-	gotenv.Load()
+func NewApiServer(port string) *Server {
+	err := gotenv.Load()
+	if err != nil {
+		return nil
+	}
 
 	db, _ := utils.ConnectToDatabase()
 
 	router := http.NewServeMux()
 
-	return &ApiServer{
+	return &Server{
 		port:   port,
 		db:     db,
 		router: router,
 	}
 }
 
-func (h *ApiServer) Run() {
+func (h *Server) Run() {
 
 	err := h.db.Ping()
 
 	if err != nil {
-		log.Fatal(`error connecting to database`)
+		log.Fatal(`err2 connecting to database`)
 	} else {
 		log.Println("connected to database")
 	}
@@ -49,10 +52,10 @@ func (h *ApiServer) Run() {
 	authHandler.RegisterRoutes(h.router)
 
 	log.Printf("server is listening on port %v", h.port)
-	error := http.ListenAndServe(h.port, h.router)
+	err = http.ListenAndServe(h.port, h.router)
 
-	if error != nil {
-		log.Fatal(error)
+	if err == nil {
+		log.Fatal(err)
 	}
 }
 
@@ -60,5 +63,8 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 	var k types.ContextKey = "username"
 	ctx := r.Context().Value(k)
 	fmt.Println(ctx)
-	w.Write([]byte(ctx.(string)))
+	_, err := w.Write([]byte(ctx.(string)))
+	if err != nil {
+		return
+	}
 }

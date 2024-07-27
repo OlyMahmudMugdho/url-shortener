@@ -10,22 +10,22 @@ import (
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
 
-type AuthHandler struct {
-	store *AuthStore
+type Handler struct {
+	store *Store
 }
 
-func NewAuthHandler(store *AuthStore) *AuthHandler {
-	return &AuthHandler{
+func NewAuthHandler(store *Store) *Handler {
+	return &Handler{
 		store: store,
 	}
 }
 
-func (h *AuthHandler) RegisterRoutes(router *http.ServeMux) {
+func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 	router.HandleFunc("POST /register", h.Register)
 	router.HandleFunc("POST /login", h.Login)
 }
 
-func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 	userBody := new(models.UserRequestBody)
 	err := json.NewDecoder(r.Body).Decode(&userBody)
@@ -35,32 +35,36 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	user := utils.GetUserFromUserRequest(userBody)
 
-	hashedPassword, err := utils.HashPassword(userBody.Password)
+	hashedPassword, hashError := utils.HashPassword(userBody.Password)
 
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(500) // internal server err2
+	if hashError != nil {
+		log.Println(hashError)
+		w.WriteHeader(500) // internal server error
 	}
 
 	user.Password = string(hashedPassword)
 
-	err2 := h.store.SaveUser(user)
+	saveError := h.store.SaveUser(user)
 
-	if err2 != nil {
-		log.Println(err2)
+	if saveError != nil {
+		log.Println(saveError)
 		w.WriteHeader(403) // unauthenticated
-	} else {
-		err := json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(user))
-		if err != nil {
-			return
-		}
+		return
+	}
+	encodeError := json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(user))
+	if encodeError != nil {
+		return
 	}
 }
 
-func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	loginRequest := new(models.LoginRequest)
 
-	json.NewDecoder(r.Body).Decode(&loginRequest)
+	decodingError := json.NewDecoder(r.Body).Decode(&loginRequest)
+
+	if decodingError != nil {
+		w.WriteHeader(500)
+	}
 
 	user, err := h.store.FindUserByUserName(loginRequest.Username)
 
@@ -70,13 +74,16 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var validPassword bool = utils.IsPassWordValid(loginRequest.Password, user.Password)
+	var validPassword = utils.IsPassWordValid(loginRequest.Password, user.Password)
 
 	if !validPassword {
 		w.WriteHeader(403)
-		json.NewEncoder(w).Encode(map[string]string{
+		err := json.NewEncoder(w).Encode(map[string]string{
 			"error": "invalid credentials",
 		})
+		if err != nil {
+			return
+		}
 		return
 	}
 
@@ -85,9 +92,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	if tokenErr != nil {
 		log.Println(tokenErr)
 		w.WriteHeader(500)
-		json.NewEncoder(w).Encode(map[string]string{
+		err := json.NewEncoder(w).Encode(map[string]string{
 			"error": "error generating token",
 		})
+		if err != nil {
+			return
+		}
 		return
 	}
 
@@ -101,7 +111,10 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(models.LoginResponse{
+	err = json.NewEncoder(w).Encode(models.LoginResponse{
 		Token: token,
 	})
+	if err != nil {
+		return
+	}
 }
