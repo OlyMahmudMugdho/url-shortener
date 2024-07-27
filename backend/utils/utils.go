@@ -87,3 +87,13 @@ func ExtractToken(cookieName string, cookies []*http.Cookie) string {
 	}
 	return token
 }
+
+func ValidateToken(token string) (*jwt.Token, error) {
+	return jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		_, ok := t.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, fmt.Errorf("invalid signing method : %v \n", t.Header["alg"])
+		}
+		return []byte(os.Getenv("JWT_SECRET")), nil
+	})
+}
