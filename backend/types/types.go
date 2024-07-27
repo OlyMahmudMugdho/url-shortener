@@ -6,3 +6,5 @@ type PostgresConfig struct {
 	Db       string
 	Sslmode  string
 }
+
+type ContextKey string
