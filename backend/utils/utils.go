@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -92,8 +93,13 @@ func ValidateToken(token string) (*jwt.Token, error) {
 	return jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		_, ok := t.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
-			return nil, fmt.Errorf("invalid signing method : %v \n", t.Header["alg"])
+			return nil, fmt.Errorf("invalid signing method : %v", t.Header["alg"])
 		}
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
+}
+
+func GetValueFromContext(ctx context.Context, key types.ContextKey) string {
+	val := ctx.Value(key).(string)
+	return val
 }
