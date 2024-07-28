@@ -3,11 +3,11 @@ package api
 import (
 	"database/sql"
 	"fmt"
+	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
 	"log"
 	"net/http"
 
 	"github.com/OlyMahmudMugdho/gotenv/gotenv"
-	"github.com/OlyMahmudMugdho/url-shortener/middlewares"
 	"github.com/OlyMahmudMugdho/url-shortener/services/auth"
 	"github.com/OlyMahmudMugdho/url-shortener/types"
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
@@ -48,8 +48,13 @@ func (h *Server) Run() {
 
 	authStore := auth.NewAuthStore(h.db)
 	authHandler := auth.NewAuthHandler(authStore)
-	h.router.Handle("GET /dev", middlewares.VerifyAuthentication(Hello))
 	authHandler.RegisterRoutes(h.router)
+
+	shortenerStore := shortener.NewShortenerStore(h.db)
+	shortenerHandler := shortener.NewShortenerHandler(shortenerStore)
+	shortenerHandler.RegisterRoutes(h.router)
+
+	//h.router.Handle("GET /dev", middlewares.VerifyAuthentication(Hello))
 
 	log.Printf("server is listening on port %v", h.port)
 	err = http.ListenAndServe(h.port, h.router)
