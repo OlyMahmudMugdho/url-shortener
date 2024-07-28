@@ -2,11 +2,13 @@ package shortener
 
 import (
 	"encoding/json"
-	"github.com/OlyMahmudMugdho/url-shortener/middlewares"
-	"github.com/OlyMahmudMugdho/url-shortener/models"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/OlyMahmudMugdho/url-shortener/middlewares"
+	"github.com/OlyMahmudMugdho/url-shortener/models"
 )
 
 type Handler struct {
@@ -28,20 +30,18 @@ func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&link)
 
-	link.CreatedAt = time.Now()
-
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(500)
 		return
 	}
 
+	link.CreatedAt = time.Now()
+
 	savedLink, err := h.store.SaveLink(link)
 	if err != nil {
-		log.Println(err)
-		return
+		log.Println(err.Error())
 	}
-
-	w.WriteHeader(200)
-	err = json.NewEncoder(w).Encode(savedLink)
+	fmt.Println(savedLink)
+	json.NewEncoder(w).Encode(savedLink)
 }
