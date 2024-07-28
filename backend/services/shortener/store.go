@@ -3,6 +3,7 @@ package shortener
 import (
 	"database/sql"
 	"github.com/OlyMahmudMugdho/url-shortener/models"
+	"log"
 )
 
 type Store struct {
@@ -21,6 +22,7 @@ func (s *Store) SaveLink(link *models.Link) (*models.Link, error) {
 	err := row.Scan(&link.Id, &link.UserId, &link.FullUrl, &link.ShortUrl, &link.UpdatedAt, &link.CreatedAt)
 
 	if err != nil {
+		log.Println(err)
 		return link, err
 	}
 
