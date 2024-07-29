@@ -72,3 +72,12 @@ func (s *Store) GetLink(urlId int) (*models.Link, error) {
 
 	return link, nil
 }
+
+func (s *Store) DeleteLink(urlId int) error {
+	var query = `DELETE FROM "urls" WHERE url_id=$1`
+	_, err := s.db.Query(query)
+	if err != nil {
+		return err
+	}
+	return nil
+}
