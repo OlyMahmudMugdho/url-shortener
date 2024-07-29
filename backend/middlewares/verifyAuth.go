@@ -23,17 +23,23 @@ func VerifyAuthentication(handler http.HandlerFunc) http.Handler {
 		validToken, err := utils.ValidateToken(token)
 
 		if err != nil {
-			json.NewEncoder(w).Encode(map[string]string{
+			err := json.NewEncoder(w).Encode(map[string]string{
 				"error": err.Error(),
 			})
+			if err != nil {
+				return
+			}
 		}
 		claims := validToken.Claims.(jwt.MapClaims)
 		username := claims["username"].(string)
+		userId := claims["userId"].(string)
 
 		var usernameContext types.ContextKey = "username"
+		var userIdContext types.ContextKey = "userId"
 
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, usernameContext, username)
+		ctx = context.WithValue(ctx, userIdContext, userId)
 		r = r.WithContext(ctx)
 
 		handler.ServeHTTP(w, r)
