@@ -32,7 +32,7 @@ func (s *Store) SaveLink(link *models.Link) (*models.Link, error) {
 
 func (s *Store) GetAllLinks(userId string) ([]models.Link, error) {
 	var links []models.Link
-	var query = `SELECT * FROM "urls" where user_id=$1`
+	var query = `SELECT * FROM "urls" WHERE user_id=$1`
 	rows, err := s.db.Query(query, userId)
 
 	if err != nil {
@@ -57,4 +57,18 @@ func (s *Store) GetAllLinks(userId string) ([]models.Link, error) {
 	}(rows)
 
 	return links, err
+}
+
+func (s *Store) GetLink(urlId int) (*models.Link, error) {
+	link := new(models.Link)
+	var query = `SELECT * FROM "urls" where url_id=$1`
+	row := s.db.QueryRow(query, urlId)
+	err := row.Scan(&link.Id, &link.UserId, &link.FullUrl, &link.ShortUrl, &link.UpdatedAt, &link.CreatedAt)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return link, nil
 }
