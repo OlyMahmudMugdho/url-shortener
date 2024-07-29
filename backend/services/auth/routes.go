@@ -2,10 +2,9 @@ package auth
 
 import (
 	"encoding/json"
+	"github.com/OlyMahmudMugdho/url-shortener/models"
 	"log"
 	"net/http"
-
-	"github.com/OlyMahmudMugdho/url-shortener/models"
 
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
@@ -87,7 +86,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, tokenErr := utils.GenerateJWT(user.Username)
+	token, tokenErr := utils.GenerateJWT(user.Username, user.Id)
 
 	if tokenErr != nil {
 		log.Println(tokenErr)
