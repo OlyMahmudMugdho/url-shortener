@@ -109,3 +109,8 @@ func GetUsernameFromContext(ctx context.Context) string {
 	var username types.ContextKey = "username"
 	return ctx.Value(username).(string)
 }
+
+func GetUserIdFromContext(ctx context.Context) string {
+	var username types.ContextKey = "userId"
+	return ctx.Value(username).(string)
+}
