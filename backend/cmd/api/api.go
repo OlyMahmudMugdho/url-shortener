@@ -3,9 +3,11 @@ package api
 import (
 	"database/sql"
 	"fmt"
-	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
 	"log"
 	"net/http"
+
+	"github.com/OlyMahmudMugdho/url-shortener/services/redirector"
+	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
 
 	"github.com/OlyMahmudMugdho/gotenv/gotenv"
 	"github.com/OlyMahmudMugdho/url-shortener/services/auth"
@@ -53,6 +55,9 @@ func (h *Server) Run() {
 	shortenerStore := shortener.NewShortenerStore(h.db)
 	shortenerHandler := shortener.NewShortenerHandler(shortenerStore)
 	shortenerHandler.RegisterRoutes(h.router)
+
+	redirectorHandler := redirector.NewRedirectorHandler(shortenerStore)
+	redirectorHandler.RegisterRoutes(h.router)
 
 	//h.router.Handle("GET /dev", middlewares.VerifyAuthentication(Hello))
 
