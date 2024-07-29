@@ -23,8 +23,9 @@ func VerifyAuthentication(handler http.HandlerFunc) http.Handler {
 		validToken, err := utils.ValidateToken(token)
 
 		if err != nil {
-			err := json.NewEncoder(w).Encode(map[string]string{
-				"error": err.Error(),
+			err := json.NewEncoder(w).Encode(map[string]any{
+				"error":   true,
+				"message": "invalid token",
 			})
 			if err != nil {
 				return
