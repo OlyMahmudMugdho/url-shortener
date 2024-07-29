@@ -3,6 +3,8 @@ package shortener
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/OlyMahmudMugdho/url-shortener/types"
+	"github.com/OlyMahmudMugdho/url-shortener/utils"
 	"log"
 	"net/http"
 	"time"
@@ -30,6 +32,12 @@ func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&link)
 
+	context := r.Context()
+	var userIdContext types.ContextKey = "userId"
+	userId := utils.GetValueFromContext(context, userIdContext)
+
+	link.UserId = userId
+
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(500)
@@ -43,5 +51,9 @@ func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
 		log.Println(err.Error())
 	}
 	fmt.Println(savedLink)
-	json.NewEncoder(w).Encode(savedLink)
+	err = json.NewEncoder(w).Encode(savedLink)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
 }
