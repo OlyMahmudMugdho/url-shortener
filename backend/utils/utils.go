@@ -116,7 +116,7 @@ func GetUserIdFromContext(ctx context.Context) string {
 	return ctx.Value(username).(string)
 }
 
-func ExtractLinkIdFromUrl(url string, prefix string) (string, bool) {
+func ExtractParamFromUrl(url string, prefix string) (string, bool) {
 	linkId, ok := strings.CutPrefix(url, prefix)
 	return linkId, ok
 }

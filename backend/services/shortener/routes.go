@@ -75,7 +75,7 @@ func (h *Handler) GetAllLinks(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetLink(w http.ResponseWriter, r *http.Request) {
-	userIdStr, ok := utils.ExtractLinkIdFromUrl(r.URL.Path, "/links/")
+	userIdStr, ok := utils.ExtractParamFromUrl(r.URL.Path, "/links/")
 
 	if !ok {
 		w.WriteHeader(400)
