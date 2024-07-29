@@ -25,6 +25,7 @@ func NewShortenerHandler(store *Store) *Handler {
 
 func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 	router.Handle("POST /add-url", middlewares.VerifyAuthentication(h.AddUrl))
+	router.Handle("GET /links", middlewares.VerifyAuthentication(h.GetAllLinks))
 }
 
 func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +55,19 @@ func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(savedLink)
 	if err != nil {
 		w.WriteHeader(500)
+		return
+	}
+}
+
+func (h *Handler) GetAllLinks(w http.ResponseWriter, r *http.Request) {
+	context := r.Context()
+	userId := utils.GetUserIdFromContext(context)
+	links, err := h.store.GetAllLinks(userId)
+	if err != nil {
+		return
+	}
+	err = json.NewEncoder(w).Encode(links)
+	if err != nil {
 		return
 	}
 }
