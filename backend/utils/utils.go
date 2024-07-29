@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/OlyMahmudMugdho/url-shortener/models"
@@ -113,4 +114,9 @@ func GetUsernameFromContext(ctx context.Context) string {
 func GetUserIdFromContext(ctx context.Context) string {
 	var username types.ContextKey = "userId"
 	return ctx.Value(username).(string)
+}
+
+func ExtractLinkIdFromUrl(url string, prefix string) (string, bool) {
+	linkId, ok := strings.CutPrefix(url, prefix)
+	return linkId, ok
 }
