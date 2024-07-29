@@ -73,9 +73,9 @@ func (s *Store) GetLink(urlId int) (*models.Link, error) {
 	return link, nil
 }
 
-func (s *Store) DeleteLink(urlId int) error {
-	var query = `DELETE FROM "urls" WHERE url_id=$1`
-	_, err := s.db.Query(query)
+func (s *Store) DeleteLink(urlId int, userId string) error {
+	var query = `DELETE FROM "urls" WHERE url_id=$1 AND urls.user_id=$2`
+	_, err := s.db.Query(query, urlId, userId)
 	if err != nil {
 		return err
 	}
