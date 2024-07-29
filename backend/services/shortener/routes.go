@@ -7,6 +7,8 @@ import (
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/OlyMahmudMugdho/url-shortener/middlewares"
@@ -26,6 +28,7 @@ func NewShortenerHandler(store *Store) *Handler {
 func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 	router.Handle("POST /add-url", middlewares.VerifyAuthentication(h.AddUrl))
 	router.Handle("GET /links", middlewares.VerifyAuthentication(h.GetAllLinks))
+	router.Handle("GET /link/{urId}", middlewares.VerifyAuthentication(h.GetLink))
 }
 
 func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
@@ -68,6 +71,29 @@ func (h *Handler) GetAllLinks(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.NewEncoder(w).Encode(links)
 	if err != nil {
+		return
+	}
+}
+
+func (h *Handler) GetLink(w http.ResponseWriter, r *http.Request) {
+	urlPath := r.URL.Path
+	userIdStr, _ := strings.CutPrefix(urlPath, "/link/")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	link, err := h.store.GetLink(userId)
+
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(link)
+	if err != nil {
+		w.WriteHeader(500)
 		return
 	}
 }
