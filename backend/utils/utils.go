@@ -66,11 +66,12 @@ func GetUserFromUserRequest(userRequest *models.UserRequestBody) models.User {
 	return *user
 }
 
-func GenerateJWT(username string) (string, error) {
+func GenerateJWT(username string, userId string) (string, error) {
 	secret := os.Getenv("JWT_SECRET")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.MapClaims{
 		"username": username,
+		"userId":   userId,
 		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	})
 
@@ -102,4 +103,9 @@ func ValidateToken(token string) (*jwt.Token, error) {
 func GetValueFromContext(ctx context.Context, key types.ContextKey) string {
 	val := ctx.Value(key).(string)
 	return val
+}
+
+func GetUsernameFromContext(ctx context.Context) string {
+	var username types.ContextKey = "username"
+	return ctx.Value(username).(string)
 }
