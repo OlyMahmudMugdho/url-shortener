@@ -29,3 +29,32 @@ func (s *Store) SaveLink(link *models.Link) (*models.Link, error) {
 
 	return link, nil
 }
+
+func (s *Store) GetAllLinks(userId string) ([]models.Link, error) {
+	var links []models.Link
+	var query = `SELECT * FROM "urls" where user_id=$1`
+	rows, err := s.db.Query(query, userId)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	for rows.Next() {
+		var link models.Link
+		err := rows.Scan(&link.Id, &link.UserId, &link.FullUrl, &link.ShortUrl, &link.UpdatedAt, &link.CreatedAt)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		links = append(links, link)
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+
+		}
+	}(rows)
+
+	return links, err
+}
