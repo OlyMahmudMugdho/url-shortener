@@ -2,9 +2,10 @@ package auth
 
 import (
 	"encoding/json"
-	"github.com/OlyMahmudMugdho/url-shortener/models"
 	"log"
 	"net/http"
+
+	"github.com/OlyMahmudMugdho/url-shortener/models"
 
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
@@ -22,6 +23,7 @@ func NewAuthHandler(store *Store) *Handler {
 func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 	router.HandleFunc("POST /register", h.Register)
 	router.HandleFunc("POST /login", h.Login)
+	router.HandleFunc("GET /logout", h.LogOut)
 }
 
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
@@ -116,4 +118,14 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+}
+
+func (h *Handler) LogOut(w http.ResponseWriter, r *http.Request) {
+	cookie := http.Cookie{
+		Name:  "token",
+		Value: "",
+	}
+
+	http.SetCookie(w, &cookie)
+	w.WriteHeader(200)
 }
