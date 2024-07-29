@@ -70,6 +70,21 @@ func (s *Store) GetLink(urlId int) (*models.Link, error) {
 	return link, nil
 }
 
+func (s *Store) GetPublicLink(shortUrl string) (*models.Link, error) {
+	link := new(models.Link)
+	var query = `SELECT full_url FROM "urls" where short_url=$1`
+
+	row := s.db.QueryRow(query, shortUrl)
+	err := row.Scan(&link.FullUrl)
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return link, nil
+}
+
 func (s *Store) DeleteLink(urlId int, userId string) error {
 	var query = `DELETE FROM "urls" WHERE url_id=$1 AND urls.user_id=$2`
 	_, err := s.db.Query(query, urlId, userId)
