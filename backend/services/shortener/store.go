@@ -50,10 +50,7 @@ func (s *Store) GetAllLinks(userId string) ([]models.Link, error) {
 		links = append(links, link)
 	}
 	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-
-		}
+		_ = rows.Close()
 	}(rows)
 
 	return links, err

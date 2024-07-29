@@ -3,12 +3,13 @@ package shortener
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/OlyMahmudMugdho/url-shortener/types"
-	"github.com/OlyMahmudMugdho/url-shortener/utils"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/OlyMahmudMugdho/url-shortener/types"
+	"github.com/OlyMahmudMugdho/url-shortener/utils"
 
 	"github.com/OlyMahmudMugdho/url-shortener/middlewares"
 	"github.com/OlyMahmudMugdho/url-shortener/models"
