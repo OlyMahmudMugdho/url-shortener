@@ -13,6 +13,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"github.com/OlyMahmudMugdho/url-shortener/types"
+	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -119,4 +120,14 @@ func GetUserIdFromContext(ctx context.Context) string {
 func ExtractParamFromUrl(url string, prefix string) (string, bool) {
 	linkId, ok := strings.CutPrefix(url, prefix)
 	return linkId, ok
+}
+
+func DbErrorMessage(err error, entityName string) string {
+	pgErr, _ := err.(*pq.Error)
+	errorName := pgErr.Code.Name()
+
+	if errorName == "unique_violation" {
+		return entityName + " already exists"
+	}
+	return "something went wrong"
 }
