@@ -49,7 +49,12 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 	if saveError != nil {
 		log.Println(saveError)
-		w.WriteHeader(403) // unauthenticated
+		message := utils.DbErrorMessage(saveError, "user")
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(map[string]any{
+			"error":   true,
+			"message": message,
+		}) // unauthenticated
 		return
 	}
 	encodeError := json.NewEncoder(w).Encode(utils.GenerateUserResponseFromUser(user))
