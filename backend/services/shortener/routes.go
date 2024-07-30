@@ -2,7 +2,6 @@ package shortener
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -52,10 +51,17 @@ func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
 	link.CreatedAt = time.Now()
 
 	savedLink, err := h.store.SaveLink(link)
+
 	if err != nil {
-		log.Println(err.Error())
+		message := utils.DbErrorMessage(err, "url")
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(map[string]any{
+			"error":   true,
+			"message": message,
+		})
+		return
 	}
-	fmt.Println(savedLink)
+
 	err = json.NewEncoder(w).Encode(savedLink)
 	if err != nil {
 		w.WriteHeader(500)
