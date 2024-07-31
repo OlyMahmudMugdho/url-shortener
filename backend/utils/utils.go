@@ -128,6 +128,7 @@ func DbErrorMessage(err error, entityName string) string {
 
 	if errorName == "unique_violation" {
 		return entityName + " already exists"
+	} else {
+		return "something went wrong"
 	}
-	return "something went wrong"
 }
