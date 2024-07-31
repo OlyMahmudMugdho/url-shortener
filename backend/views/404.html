@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        body {
+            background-color: #f3f4f6;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 4em;
+            margin: 0.5em 0;
+            color: #ff6347;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        .interactive {
+            margin-top: 20px;
+        }
+        .interactive img {
+            width: 300px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .interactive img:hover {
+            transform: scale(1.2);
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            color: white;
+            background-color: #ff6347;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #ff4500;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>404</h1>
+    <p>Oops! The page you're looking for doesn't exist.</p>
+    <div class="interactive">
+        <p>But hey, here's a cute cat to cheer you up:</p>
+        <img src="https://cdn.dribbble.com/users/252114/screenshots/3840347/mong03b.gif" alt="Cute kitten" onclick="alert('Meow!')">
+    </div>
+    <a href="/">Go Back Home</a>
+</div>
+</body>
+</html>
