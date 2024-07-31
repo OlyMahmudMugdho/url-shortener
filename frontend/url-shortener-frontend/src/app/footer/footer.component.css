@@ -1,4 +1,91 @@
 footer {
-  height : 20rem;
-  width : 100%
+  width : 100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
+
+.my-info {
+  display : flex;
+  flex-direction : column;
+  justify-content:center;
+  align-items:start;
+  border-right : 1px solid white;
+  padding-right : 7rem;
+}
+
+.my-info p {
+  color : #f4eeee;
+  font-size : 1.1em;
+}
+
+.my-info h2 {
+  color : #f4eeee;
+}
+
+
+
+.footer-container {
+  width: 100%;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  gap : 4rem;
+}
+
+.my-links {
+  display:flex;
+  flex-direction:column;
+  margin-right:8rem;
+}
+.my-links p {
+  color : #f4eeee;
+  display:flex;
+  flex-direction:column;
+  gap : 5px;
+}
+
+.my-links a {
+  color : #f4eeee;
+  text-decoration : none;
+  font-size : 1.05em;
+}
+.my-links h2 {
+  color : #f4eeee;
+}
+
+
+@media only screen and (max-width: 900px) {
+  footer {
+    padding-left : 5rem;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .footer-container {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction : column;
+    gap : 1rem;
+  }
+  .my-info {
+    display : flex;
+    flex-direction : column;
+    justify-content:center;
+    align-items:start;
+    border-right : 1px solid white;
+    padding-right : 3rem;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
