@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"github.com/OlyMahmudMugdho/url-shortener/types"
 	"log"
 	"net/http"
 
@@ -41,6 +42,11 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	if hashError != nil {
 		log.Println(hashError)
 		w.WriteHeader(500) // internal server error
+		json.NewEncoder(w).Encode(&types.Error{
+			Error:   true,
+			Message: "internal server error",
+			Code:    http.StatusInternalServerError,
+		})
 	}
 
 	user.Password = string(hashedPassword)
@@ -51,9 +57,10 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		log.Println(saveError)
 		message := utils.DbErrorMessage(saveError, "user")
 		w.WriteHeader(400)
-		json.NewEncoder(w).Encode(map[string]any{
-			"error":   true,
-			"message": message,
+		json.NewEncoder(w).Encode(&types.Error{
+			Error:   true,
+			Message: message,
+			Code:    http.StatusBadRequest,
 		}) // unauthenticated
 		return
 	}
@@ -76,7 +83,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(&types.Error{
+			Error:   true,
+			Message: "user not found with this username",
+			Code:    http.StatusNotFound,
+		})
 		return
 	}
 
