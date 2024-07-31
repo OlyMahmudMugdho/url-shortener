@@ -26,6 +26,7 @@ func NewShortenerHandler(store *Store) *Handler {
 
 func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 	router.Handle("POST /add-url", middlewares.VerifyAuthentication(h.AddUrl))
+	router.Handle("PUT /update-url", middlewares.VerifyAuthentication(h.UpdateLink))
 	router.Handle("GET /links", middlewares.VerifyAuthentication(h.GetAllLinks))
 	router.Handle("GET /links/{urlId}", middlewares.VerifyAuthentication(h.GetLink))
 	router.Handle("DELETE /links/{urlId}", middlewares.VerifyAuthentication(h.DeleteLink))
@@ -111,6 +112,39 @@ func (h *Handler) GetLink(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
+}
+
+func (h *Handler) UpdateLink(w http.ResponseWriter, r *http.Request) {
+	link := new(models.Link)
+	err := json.NewDecoder(r.Body).Decode(&link)
+	//link.UpdatedAt = sql.NullTime{Time: time.Now().Local()}
+	//fmt.Println(link.UpdatedAt.Time)
+	//fmt.Println(link.CreatedAt)
+	//return
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(&types.Error{
+			Error:   true,
+			Message: "invalid json request",
+			Code:    http.StatusBadRequest,
+		})
+		return
+	}
+
+	link, err = h.store.UpdateLink(link)
+
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]any{
+		"ok":      true,
+		"message": "updated",
+		"data":    &link,
+	})
 }
 
 func (h *Handler) DeleteLink(w http.ResponseWriter, r *http.Request) {
