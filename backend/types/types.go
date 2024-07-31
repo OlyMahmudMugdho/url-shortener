@@ -8,3 +8,9 @@ type PostgresConfig struct {
 }
 
 type ContextKey string
+
+type Error struct {
+	Error   bool   `json:"error"`
+	Message string `json:"message"`
+	Code    int    `json:"code"`
+}
