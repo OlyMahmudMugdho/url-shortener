@@ -55,17 +55,25 @@ footer {
 }
 
 
-@media only screen and (max-width: 900px) {
+@media only screen and (min-width: 720px) {
+  footer {
+    padding-top : 3rem;
+    padding-bottom : 3rem;
+  }
+}
+
+
+@media only screen and (max-width: 1100px) {
   footer {
     padding-left : 5rem;
   }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 500px) {
   .footer-container {
     display:flex;
     justify-content:center;
-    align-items:center;
+    align-items:start;
     flex-direction : column;
     gap : 1rem;
   }
