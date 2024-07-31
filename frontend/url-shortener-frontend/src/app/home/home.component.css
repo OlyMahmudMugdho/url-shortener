@@ -1,0 +1,47 @@
+.home-container {
+  width: 90%;
+  display : flex;
+  justify-content : center;
+  align-items : center;
+  min-height: 95vh;
+  margin : 1rem;
+  gap : 4rem;
+}
+
+.home-box {
+  width:40%;
+  display : flex;
+  justify-content: center;
+}
+article h1 {
+  font-size : 2rem;
+}
+
+
+@media only screen and (max-width: 768px) {
+  .home-container {
+    flex-direction : column-reverse;
+  }
+  .home-box {
+    width:70%;
+    display : flex;
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .home-container {
+    min-height : 80vh;
+    margin-bottom: 5rem;
+  }
+  .home-box {
+    width:80%;
+    display : flex;
+    justify-content: center;
+    gap: 0.1rem;
+  }
+  article h1 {
+    font-size : 1rem;
+  }
+}
+

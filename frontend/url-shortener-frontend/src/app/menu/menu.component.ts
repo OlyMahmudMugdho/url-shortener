@@ -32,7 +32,7 @@ export class MenuComponent implements OnInit {
         command: () => {
           this.router.navigate(['home']);
         },
-        icon: 'pi pi-info',
+        icon: 'pi pi-info-circle',
         label: 'About'
       },
       {
