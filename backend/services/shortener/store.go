@@ -78,7 +78,6 @@ func (s *Store) GetPublicLink(shortUrl string) (*models.Link, error) {
 	err := row.Scan(&link.FullUrl)
 
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
