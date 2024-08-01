@@ -30,5 +30,6 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
+	Ok    bool   `json:"ok"`
 	Token string `json:"token"`
 }
