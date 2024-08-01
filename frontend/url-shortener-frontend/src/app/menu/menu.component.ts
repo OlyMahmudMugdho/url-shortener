@@ -39,7 +39,7 @@ export class MenuComponent implements OnInit {
         label: 'Login',
         icon: 'pi pi-sign-in',
         command: () => {
-          this.messageService.add({ severity: 'warn', summary: 'Search Results', detail: 'No results found', life: 3000 });
+          this.router.navigate(['login'])
         }
       },
       {
