@@ -2,10 +2,11 @@ package redirector
 
 import (
 	"fmt"
-	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
 )
 
 type Handler struct {
@@ -20,12 +21,12 @@ func NewRedirectorHandler(store *shortener.Store) *Handler {
 
 func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 	// Remove the HTTP method from the route definition
-	router.HandleFunc("GET /", h.OpenLink)
+	router.HandleFunc("GET /app/{shortLink}", h.OpenLink)
 }
 
 func (h *Handler) OpenLink(w http.ResponseWriter, r *http.Request) {
 	url := r.RequestURI
-	shotURl, _ := strings.CutPrefix(url, "/")
+	shotURl, _ := strings.CutPrefix(url, "/app/")
 
 	link, err := h.shortenerStore.GetPublicLink(shotURl)
 

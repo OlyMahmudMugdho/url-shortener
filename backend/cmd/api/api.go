@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/OlyMahmudMugdho/url-shortener/middlewares"
 	"github.com/OlyMahmudMugdho/url-shortener/services/redirector"
 	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
 
@@ -60,10 +59,13 @@ func (h *Server) Run() {
 	redirectorHandler := redirector.NewRedirectorHandler(shortenerStore)
 	redirectorHandler.RegisterRoutes(h.router)
 
+	fs := http.FileServer(http.Dir("./dist/url-shortener-frontend/browser"))
+	h.router.Handle("/*", fs)
+
 	//h.router.Handle("GET /dev", middlewares.VerifyAuthentication(Hello))
 
 	log.Printf("server is listening on port %v", h.port)
-	err = http.ListenAndServe(h.port, middlewares.CORS(h.router))
+	err = http.ListenAndServe(h.port, h.router)
 
 	if err == nil {
 		log.Fatal(err)
