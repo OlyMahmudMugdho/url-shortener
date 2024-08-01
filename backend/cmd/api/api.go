@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/OlyMahmudMugdho/url-shortener/services/redirector"
 	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
@@ -60,7 +62,16 @@ func (h *Server) Run() {
 	redirectorHandler.RegisterRoutes(h.router)
 
 	fs := http.FileServer(http.Dir("./dist/url-shortener-frontend/browser"))
-	h.router.Handle("/*", fs)
+	h.router.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	// Serve index.html for all other routes
+	h.router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if _, err := os.Stat(filepath.Join("./dist/url-shortener-frontend/browser", r.URL.Path)); os.IsNotExist(err) {
+			http.ServeFile(w, r, "./dist/url-shortener-frontend/browser/index.html")
+		} else {
+			fs.ServeHTTP(w, r)
+		}
+	})
 
 	//h.router.Handle("GET /dev", middlewares.VerifyAuthentication(Hello))
 
