@@ -1,0 +1,23 @@
+.signup-section {
+  min-height: 100vh;
+  padding: 0.4rem 0;
+  width: 100%;
+}
+
+.signup-form {
+  display : flex;
+  flex-direction: column;
+  gap : 0.5rem;
+}
+
+.input-field-container {
+  display : flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight : bold;
+}
+button {
+  width : 100%;
+}
