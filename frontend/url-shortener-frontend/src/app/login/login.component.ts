@@ -7,7 +7,9 @@ import {FloatLabelModule} from "primeng/floatlabel";
 import {Button, ButtonDirective} from "primeng/button";
 import {Ripple} from "primeng/ripple";
 import {FormsModule} from "@angular/forms";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {AuthService} from "../services/auth/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -31,7 +33,19 @@ export class LoginComponent {
   username:any;
   password:any;
 
+  constructor(private authService :AuthService, private router :Router) {
+  }
+
   handleSubmit(){
-    alert(this.username + " : " + this.password)
+    this.authService.sendLoginData({
+      username : this.username,
+      password : this.password
+    }).subscribe(response => {
+      if (!response.ok){
+        this.authService.setAuthenticated(false)
+      } else {
+        this.authService.setAuthenticated(true)
+      }
+    })
   }
 }
