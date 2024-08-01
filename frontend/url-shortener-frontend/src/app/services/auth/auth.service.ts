@@ -10,8 +10,10 @@ import {Observable} from "rxjs";
 
 export class AuthService {
 
+  private onProduction :boolean = false;
+
   private isAuthenticated :boolean = false
-  private url :string = "http://localhost:8080/login"
+  private url :string = this.onProduction ? "/login" : "http://localhost:8080/login"
   private httpOptions :any = {
     header : new HttpHeaders({
       "Content-Type" : "application/json"
