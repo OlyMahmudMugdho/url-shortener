@@ -2,9 +2,10 @@ package auth
 
 import (
 	"encoding/json"
-	"github.com/OlyMahmudMugdho/url-shortener/types"
 	"log"
 	"net/http"
+
+	"github.com/OlyMahmudMugdho/url-shortener/types"
 
 	"github.com/OlyMahmudMugdho/url-shortener/models"
 
@@ -84,7 +85,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(&types.Error{
+		json.NewEncoder(w).Encode(types.Error{
 			Error:   true,
 			Message: "user not found with this username",
 			Code:    http.StatusNotFound,
@@ -96,8 +97,10 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 
 	if !validPassword {
 		w.WriteHeader(403)
-		err := json.NewEncoder(w).Encode(map[string]string{
-			"error": "invalid credentials",
+		err := json.NewEncoder(w).Encode(types.Error{
+			Error:   true,
+			Message: "invalid credentials",
+			Code:    403,
 		})
 		if err != nil {
 			return
@@ -110,8 +113,10 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	if tokenErr != nil {
 		log.Println(tokenErr)
 		w.WriteHeader(500)
-		err := json.NewEncoder(w).Encode(map[string]string{
-			"error": "error generating token",
+		err := json.NewEncoder(w).Encode(types.Error{
+			Error:   true,
+			Message: "error generating token",
+			Code:    500,
 		})
 		if err != nil {
 			return
@@ -129,7 +134,9 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 
 	w.WriteHeader(200)
+	w.Header().Add("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(models.LoginResponse{
+		Ok:    true,
 		Token: token,
 	})
 	if err != nil {
