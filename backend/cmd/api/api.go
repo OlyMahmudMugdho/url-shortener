@@ -51,6 +51,15 @@ func (h *Server) Run() {
 		log.Println("connected to database")
 	}
 
+	err = utils.CreateTables(h.db)
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println("table created")
+
 	authStore := auth.NewAuthStore(h.db)
 	authHandler := auth.NewAuthHandler(authStore)
 	authHandler.RegisterRoutes(h.router)
