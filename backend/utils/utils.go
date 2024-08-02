@@ -36,6 +36,38 @@ func ConnectToDatabase() (*sql.DB, error) {
 	}
 }
 
+func CreateTables(db *sql.DB) error {
+	userSchemaFile, err := os.ReadFile("db/user/user_table_up.sql")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	urlSchemaFile, err := os.ReadFile("db/shortener/url_table_up.sql")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	userSchema := string(userSchemaFile)
+	urlSchema := string(urlSchemaFile)
+
+	_, err = db.Exec(userSchema)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	_, err = db.Exec(urlSchema)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+
+}
+
 func HashPassword(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), 10)
 }
