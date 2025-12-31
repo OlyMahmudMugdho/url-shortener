@@ -1,23 +1,47 @@
 .login-section {
   min-height: 100vh;
-  padding: 3rem 0;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--surface-ground); /* Use PrimeNG variable if available or fallback */
 }
 
 .login-form {
   display : flex;
   flex-direction: column;
-  gap : 1rem;
+  gap : 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface-card, #ffffff);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .input-field-container {
   display : flex;
   flex-direction: column;
+  gap: 0.5rem;
 }
 
 label {
-  font-weight : bold;
+  font-weight : 600;
+  margin-bottom: 0.5rem;
+  display: block;
 }
+
 button {
   width : 100%;
+}
+
+h1 {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  margin-top: 1rem;
 }

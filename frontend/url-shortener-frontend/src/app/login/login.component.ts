@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import {IconFieldModule} from "primeng/iconfield";
-import {InputIconModule} from "primeng/inputicon";
-import {InputTextModule} from "primeng/inputtext";
-import {NgStyle} from "@angular/common";
-import {FloatLabelModule} from "primeng/floatlabel";
-import {Button, ButtonDirective} from "primeng/button";
-import {Ripple} from "primeng/ripple";
-import {FormsModule} from "@angular/forms";
-import {Router, RouterLink} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../services/auth/auth.service";
+import { IconFieldModule } from "primeng/iconfield";
+import { InputIconModule } from "primeng/inputicon";
+import { InputTextModule } from "primeng/inputtext";
+import { NgStyle } from "@angular/common";
+import { FloatLabelModule } from "primeng/floatlabel";
+import { Button, ButtonDirective } from "primeng/button";
+import { Ripple } from "primeng/ripple";
+import { FormsModule } from "@angular/forms";
+import { Router, RouterLink } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../services/auth/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -30,21 +30,29 @@ import {AuthService} from "../services/auth/auth.service";
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  username:any;
-  password:any;
+  username: any;
+  password: any;
 
-  constructor(private authService :AuthService, private router :Router) {
+  constructor(private authService: AuthService, private router: Router) {
   }
 
-  handleSubmit(){
+  handleSubmit() {
     this.authService.sendLoginData({
-      username : this.username,
-      password : this.password
-    }).subscribe(response => {
-      if (!response.ok){
-        this.authService.setAuthenticated(false)
-      } else {
-        this.authService.setAuthenticated(true)
+      username: this.username,
+      password: this.password
+    }).subscribe({
+      next: (response) => {
+        if (!response.ok) {
+          this.authService.setAuthenticated(false);
+          alert("Login failed");
+        } else {
+          this.authService.setAuthenticated(true);
+          this.router.navigate(['/']); // Navigate to home
+        }
+      },
+      error: (err) => {
+        this.authService.setAuthenticated(false);
+        alert("Login error: " + (err.error?.message || "Unknown error"));
       }
     })
   }

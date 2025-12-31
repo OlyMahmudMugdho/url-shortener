@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -12,6 +13,9 @@ import (
 	"github.com/OlyMahmudMugdho/url-shortener/models"
 	"github.com/golang-jwt/jwt/v5"
 
+	"crypto/sha256"
+	"encoding/binary"
+
 	"github.com/OlyMahmudMugdho/url-shortener/types"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
@@ -19,17 +23,30 @@ import (
 )
 
 func ConnectToDatabase() (*sql.DB, error) {
+	host := os.Getenv("POSTGRES_HOST")
+	if host == "" {
+		host = "localhost"
+	}
+	port := os.Getenv("POSTGRES_PORT")
+	if port == "" {
+		port = "5432"
+	}
+
 	var config = types.PostgresConfig{
 		Username: os.Getenv("POSTGRES_USERNAME"),
 		Password: os.Getenv("POSTGRES_PASSWORD"),
 		Db:       os.Getenv("POSTGRES_DBNAME"),
 		Sslmode:  os.Getenv("POSTGRES_SSLMODE"),
+		Host:     host,
+		Port:     port,
 	}
-	var connStr = "user=" + config.Username + " password=" + config.Password + " dbname=" + config.Db + " sslmode=" + config.Sslmode
+	var connStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		config.Host, config.Port, config.Username, config.Password, config.Db, config.Sslmode)
+
 	db, err := sql.Open("postgres", connStr)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error opening database:", err)
 		return nil, err
 	} else {
 		return db, nil
@@ -163,4 +180,32 @@ func DbErrorMessage(err error, entityName string) string {
 	} else {
 		return "something went wrong"
 	}
+}
+
+func GenerateShortUrl(url string) string {
+	hash := sha256.Sum256([]byte(url + time.Now().String()))
+	// Take first 8 bytes and convert to uint64
+	num := binary.BigEndian.Uint64(hash[:8])
+	return Base62Encode(num)
+}
+
+func Base62Encode(n uint64) string {
+	const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	if n == 0 {
+		return string(alphabet[0])
+	}
+	var res []byte
+	for n > 0 {
+		res = append(res, alphabet[n%62])
+		n /= 62
+	}
+	// Reverse the slice
+	for i, j := 0, len(res)-1; i < j; i, j = i+1, j-1 {
+		res[i], res[j] = res[j], res[i]
+	}
+	// Return only first 7 characters for shorter URLs
+	if len(res) > 7 {
+		return string(res[:7])
+	}
+	return string(res)
 }

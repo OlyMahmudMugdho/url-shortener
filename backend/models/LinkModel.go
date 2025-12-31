@@ -7,7 +7,7 @@ import (
 
 type Link struct {
 	Id        int          `json:"id"`
-	UserId    string       `json:"userId"`
+	UserId    int          `json:"userId"`
 	FullUrl   string       `json:"fullUrl"`
 	ShortUrl  string       `json:"shortUrl"`
 	UpdatedAt sql.NullTime `json:"updatedAt"`

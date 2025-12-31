@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -108,7 +109,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, tokenErr := utils.GenerateJWT(user.Username, user.Id)
+	token, tokenErr := utils.GenerateJWT(user.Username, fmt.Sprintf("%d", user.Id))
 
 	if tokenErr != nil {
 		log.Println(tokenErr)

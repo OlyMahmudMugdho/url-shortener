@@ -41,12 +41,17 @@ func (h *Handler) AddUrl(w http.ResponseWriter, r *http.Request) {
 	var userIdContext types.ContextKey = "userId"
 	userId := utils.GetValueFromContext(context, userIdContext)
 
-	link.UserId = userId
+	userIdInt, _ := strconv.Atoi(userId)
+	link.UserId = userIdInt
 
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(500)
 		return
+	}
+
+	if link.ShortUrl == "" {
+		link.ShortUrl = utils.GenerateShortUrl(link.FullUrl)
 	}
 
 	link.CreatedAt = time.Now()
@@ -164,7 +169,8 @@ func (h *Handler) DeleteLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.store.DeleteLink(urlId, userId)
+	userIdInt, _ := strconv.Atoi(userId)
+	err = h.store.DeleteLink(urlId, userIdInt)
 
 	if err != nil {
 		log.Println(err)

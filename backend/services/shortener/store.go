@@ -3,6 +3,7 @@ package shortener
 import (
 	"database/sql"
 	"log"
+	"strconv"
 
 	"github.com/OlyMahmudMugdho/url-shortener/models"
 )
@@ -32,8 +33,9 @@ func (s *Store) SaveLink(link *models.Link) (*models.Link, error) {
 
 func (s *Store) GetAllLinks(userId string) ([]models.Link, error) {
 	var links []models.Link
+	userIdInt, _ := strconv.Atoi(userId)
 	var query = `SELECT * FROM "urls" WHERE user_id=$1`
-	rows, err := s.db.Query(query, userId)
+	rows, err := s.db.Query(query, userIdInt)
 
 	if err != nil {
 		log.Println(err)
@@ -94,7 +96,7 @@ func (s *Store) UpdateLink(link *models.Link) (*models.Link, error) {
 	return link, nil
 }
 
-func (s *Store) DeleteLink(urlId int, userId string) error {
+func (s *Store) DeleteLink(urlId int, userId int) error {
 	var query = `DELETE FROM "urls" WHERE url_id=$1 AND urls.user_id=$2`
 	_, err := s.db.Query(query, urlId, userId)
 	if err != nil {

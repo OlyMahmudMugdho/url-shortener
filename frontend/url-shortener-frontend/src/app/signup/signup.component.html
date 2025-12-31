@@ -2,56 +2,60 @@
   <h1 [ngStyle]="{color : 'var(--text-color)'}">Create a new account</h1>
   <form class="signup-form" (ngSubmit)="handleSubmit()">
 
-    <label for="username" [ngStyle]="{color : 'var(--text-color)'}" >Username</label>
-    <p-iconField class="input-field-container" iconPosition="left">
-      <p-inputIcon class="input-icon" styleClass="pi pi-user" />
-      <input [(ngModel)]="username" name="username" id="username" type="text" pInputText placeholder="Username" />
-    </p-iconField>
+    <label for="username" [ngStyle]="{color : 'var(--text-color)'}">Username</label>
+    <div class="input-field-container">
+      <p-iconField iconPosition="left">
+        <p-inputIcon class="input-icon" styleClass="pi pi-user" />
+        <input [(ngModel)]="username" name="username" id="username" type="text" pInputText placeholder="Username"
+          style="width: 100%" />
+      </p-iconField>
+    </div>
+
+    <label for="email" [ngStyle]="{color : 'var(--text-color)'}">E-mail</label>
+    <div class="input-field-container">
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-envelope" />
+        <input [(ngModel)]="email" name="email" id="email" type="email" pInputText placeholder="E-mail"
+          style="width: 100%" />
+      </p-iconField>
+    </div>
+
+    <label for="password" [ngStyle]="{color : 'var(--text-color)'}">Password</label>
+    <div class="input-field-container">
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-lock" />
+        <input [(ngModel)]="password" name="password" id="password" type="password" pInputText placeholder="Password"
+          style="width: 100%" />
+      </p-iconField>
+    </div>
+
+    <label for="firstName" [ngStyle]="{color : 'var(--text-color)'}">First Name</label>
+    <div class="input-field-container">
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-id-card" />
+        <input [(ngModel)]="firstName" name="firstName" id="firstName" type="text" pInputText placeholder="First Name"
+          style="width: 100%" />
+      </p-iconField>
+    </div>
+
+    <label for="lastName" [ngStyle]="{color : 'var(--text-color)'}">Last Name</label>
+    <div class="input-field-container">
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-id-card" />
+        <input [(ngModel)]="lastName" name="lastName" id="lastName" type="text" pInputText placeholder="Last Name"
+          style="width: 100%" />
+      </p-iconField>
+    </div>
 
 
-    <label for="email"  [ngStyle]="{color : 'var(--text-color)'}">E-mail</label>
-    <p-iconField class="input-field-container"  iconPosition="left">
-      <p-inputIcon styleClass="pi pi-lock" />
-      <input [(ngModel)]="email"  name="email" id="email" type="password" pInputText placeholder="E-mail" />
-    </p-iconField>
 
-
-    <label for="password"  [ngStyle]="{color : 'var(--text-color)'}">Password</label>
-    <p-iconField class="input-field-container"  iconPosition="left">
-      <p-inputIcon styleClass="pi pi-lock" />
-      <input [(ngModel)]="password"  name="password" id="password" type="password" pInputText placeholder="Password" />
-    </p-iconField>
-
-    <label for="firstName"  [ngStyle]="{color : 'var(--text-color)'}">First Name</label>
-    <p-iconField class="input-field-container"  iconPosition="left">
-      <p-inputIcon styleClass="pi pi-lock" />
-      <input [(ngModel)]="firstName"  name="firstName" id="firstName" type="text" pInputText placeholder="First Name" />
-    </p-iconField>
-
-    <label for="lastName"  [ngStyle]="{color : 'var(--text-color)'}">Last Name</label>
-    <p-iconField class="input-field-container"  iconPosition="left">
-      <p-inputIcon styleClass="pi pi-lock" />
-      <input [(ngModel)]="lastName"  name="lastName" id="lastName" type="text" pInputText placeholder="Last Name" />
-    </p-iconField>
-
-
-
-    <button
-      pButton
-      pRipple
-      label="Register"
-      class="p-button-info">
+    <button pButton pRipple label="Register" class="p-button-info">
     </button>
 
   </form>
 
   <p [ngStyle]="{color : 'var(--text-color)'}">Already have an account?</p>
-  <button
-    routerLink="/login"
-    pButton
-    pRipple
-    label="Log-in"
-    class="p-button-info">
+  <button routerLink="/login" pButton pRipple label="Log-in" class="p-button-info">
   </button>
 
 </section>

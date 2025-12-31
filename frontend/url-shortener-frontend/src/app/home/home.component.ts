@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import {Button} from "primeng/button";
-import {ImageModule} from "primeng/image";
-import {NgStyle} from "@angular/common";
+import { Button } from "primeng/button";
+import { ImageModule } from "primeng/image";
+import { NgStyle } from "@angular/common";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,8 @@ import {NgStyle} from "@angular/common";
   imports: [
     Button,
     ImageModule,
-    NgStyle
+    NgStyle,
+    RouterLink
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

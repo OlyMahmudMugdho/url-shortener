@@ -2,7 +2,6 @@ package auth
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/OlyMahmudMugdho/url-shortener/models"
 )
@@ -19,9 +18,9 @@ func NewAuthStore(db *sql.DB) *Store {
 
 func (h *Store) SaveUser(user models.User) error {
 
-	var query = fmt.Sprintf(`INSERT INTO users (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL) VALUES ('%s','%s','%s','%s','%s')`, user.Username, user.Password, user.FirstName, user.LastName, user.Email)
+	var query = `INSERT INTO users (USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL) VALUES ($1, $2, $3, $4, $5)`
 
-	_, err := h.db.Exec(query)
+	_, err := h.db.Exec(query, user.Username, user.Password, user.FirstName, user.LastName, user.Email)
 
 	if err != nil {
 		return err

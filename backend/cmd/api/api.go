@@ -46,9 +46,9 @@ func (h *Server) Run() {
 	err := h.db.Ping()
 
 	if err != nil {
-		log.Fatal(`err2 connecting to database`)
+		log.Fatal("Error connecting to database: ", err)
 	} else {
-		log.Println("connected to database")
+		log.Println("Connected to database")
 	}
 
 	err = utils.CreateTables(h.db)
@@ -72,15 +72,29 @@ func (h *Server) Run() {
 	redirectorHandler.RegisterRoutes(h.router)
 
 	fs := http.FileServer(http.Dir("./dist/url-shortener-frontend/browser"))
-	h.router.Handle("/static/", http.StripPrefix("/static/", fs))
+	// h.router.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	// Serve index.html for all other routes
+	// Serve index.html for all other routes or handle redirects
 	h.router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if _, err := os.Stat(filepath.Join("./dist/url-shortener-frontend/browser", r.URL.Path)); os.IsNotExist(err) {
-			http.ServeFile(w, r, "./dist/url-shortener-frontend/browser/index.html")
-		} else {
+		path := r.URL.Path
+		// Check for static file existence first
+		if _, err := os.Stat(filepath.Join("./dist/url-shortener-frontend/browser", path)); err == nil && path != "/" {
 			fs.ServeHTTP(w, r)
+			return
 		}
+
+		// Try to find short link if it's not root
+		if len(path) > 1 {
+			shortCode := path[1:]
+			link, err := shortenerStore.GetPublicLink(shortCode)
+			if err == nil {
+				http.Redirect(w, r, link.FullUrl, http.StatusSeeOther)
+				return
+			}
+		}
+
+		// Retrieve index.html for SPA
+		http.ServeFile(w, r, "./dist/url-shortener-frontend/browser/index.html")
 	})
 
 	//h.router.Handle("GET /dev", middlewares.VerifyAuthentication(Hello))
