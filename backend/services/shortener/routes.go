@@ -137,6 +137,14 @@ func (h *Handler) UpdateLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Extract User ID from context (as string) and convert to int
+	context := r.Context()
+	var userIdContext types.ContextKey = "userId"
+	userIdStr := utils.GetValueFromContext(context, userIdContext)
+	userIdInt, _ := strconv.Atoi(userIdStr) // Add error handling if robust, but assuming middleware validated it
+
+	link.UserId = userIdInt // Set the integer UserId
+
 	link, err = h.store.UpdateLink(link)
 
 	if err != nil {

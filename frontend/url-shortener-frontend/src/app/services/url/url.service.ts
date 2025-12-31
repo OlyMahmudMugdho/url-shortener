@@ -31,4 +31,8 @@ export class UrlService {
     deleteLink(urlId: number): Observable<any> {
         return this.httpClient.delete(`${this.baseUrl}/links/${urlId}`, this.httpOptions);
     }
+
+    updateUrl(link: any): Observable<any> {
+        return this.httpClient.put(`${this.baseUrl}/update-url`, JSON.stringify(link), this.httpOptions);
+    }
 }

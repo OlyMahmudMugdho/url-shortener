@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
 import { UrlService } from '../services/url/url.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -21,6 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
         TableModule,
         CardModule,
         ToastModule,
+        DialogModule,
         TooltipModule
     ],
     providers: [MessageService],
@@ -86,6 +88,28 @@ export class DashboardComponent implements OnInit {
         const fullShortUrl = `http://localhost:8080/${shortUrl}`; // Assuming backend handles redirection from root
         navigator.clipboard.writeText(fullShortUrl).then(() => {
             this.messageService.add({ severity: 'info', summary: 'Copied', detail: 'Link copied to clipboard' });
+        });
+    }
+
+    editDialogVisible: boolean = false;
+    currentEditLink: any = { fullUrl: '', shortUrl: '' };
+
+    openEditDialog(link: any) {
+        this.currentEditLink = { ...link };
+        this.editDialogVisible = true;
+    }
+
+    saveEditedUrl() {
+        this.urlService.updateUrl(this.currentEditLink).subscribe({
+            next: (res) => {
+                this.messageService.add({ severity: 'success', summary: 'Success', detail: 'URL Updated' });
+                this.editDialogVisible = false;
+                this.getAllLinks();
+            },
+            error: (err) => {
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update URL' });
+                console.error(err);
+            }
         });
     }
 }
