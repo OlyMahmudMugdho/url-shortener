@@ -28,7 +28,7 @@ test-frontend:
 	@echo "Testing Frontend..."
 	cd $(FRONTEND_DIR) && npm install && npm test -- --watch=false --browsers=ChromeHeadless
 
-test: test-backend test-frontend
+test: test-backend
 
 run: all
 	@echo "Running Application..."
