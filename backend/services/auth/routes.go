@@ -13,11 +13,16 @@ import (
 	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
 
-type Handler struct {
-	store *Store
+type UserStore interface {
+	SaveUser(user models.User) error
+	FindUserByUserName(username string) (models.User, error)
 }
 
-func NewAuthHandler(store *Store) *Handler {
+type Handler struct {
+	store UserStore
+}
+
+func NewAuthHandler(store UserStore) *Handler {
 	return &Handler{
 		store: store,
 	}

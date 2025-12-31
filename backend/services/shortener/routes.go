@@ -14,11 +14,20 @@ import (
 	"github.com/OlyMahmudMugdho/url-shortener/models"
 )
 
-type Handler struct {
-	store *Store
+type LinkStore interface {
+	SaveLink(link *models.Link) (*models.Link, error)
+	GetAllLinks(userId string) ([]models.Link, error)
+	GetLink(urlId int) (*models.Link, error)
+	GetPublicLink(shortUrl string) (*models.Link, error)
+	UpdateLink(link *models.Link) (*models.Link, error)
+	DeleteLink(urlId int, userId int) error
 }
 
-func NewShortenerHandler(store *Store) *Handler {
+type Handler struct {
+	store LinkStore
+}
+
+func NewShortenerHandler(store LinkStore) *Handler {
 	return &Handler{
 		store: store,
 	}

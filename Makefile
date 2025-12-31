@@ -1,4 +1,4 @@
-.PHONY: all build-frontend build-backend run clean
+.PHONY: all build-frontend build-backend run clean test test-backend test-frontend
 
 APP_NAME=url-shortener
 FRONTEND_DIR=frontend/url-shortener-frontend
@@ -19,6 +19,16 @@ build-frontend:
 build-backend:
 	@echo "Building Backend..."
 	cd $(BACKEND_DIR) && go build -o $(APP_NAME) main.go
+
+test-backend:
+	@echo "Testing Backend..."
+	cd $(BACKEND_DIR) && go test ./...
+
+test-frontend:
+	@echo "Testing Frontend..."
+	cd $(FRONTEND_DIR) && npm install && npm test -- --watch=false --browsers=ChromeHeadless
+
+test: test-backend test-frontend
 
 run: all
 	@echo "Running Application..."

@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/OlyMahmudMugdho/url-shortener/services/shortener"
+	"github.com/OlyMahmudMugdho/url-shortener/utils"
 )
 
 type Handler struct {
-	shortenerStore *shortener.Store
+	shortenerStore shortener.LinkStore
 }
 
-func NewRedirectorHandler(store *shortener.Store) *Handler {
+func NewRedirectorHandler(store shortener.LinkStore) *Handler {
 	return &Handler{
 		shortenerStore: store,
 	}
@@ -25,8 +25,12 @@ func (h *Handler) RegisterRoutes(router *http.ServeMux) {
 }
 
 func (h *Handler) OpenLink(w http.ResponseWriter, r *http.Request) {
-	url := r.RequestURI
-	shotURl, _ := strings.CutPrefix(url, "/app/")
+	shotURl, ok := utils.ExtractParamFromUrl(r.URL.Path, "/app/")
+
+	if !ok {
+		w.WriteHeader(400)
+		return
+	}
 
 	link, err := h.shortenerStore.GetPublicLink(shotURl)
 
