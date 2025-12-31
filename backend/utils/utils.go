@@ -32,11 +32,16 @@ func ConnectToDatabase() (*sql.DB, error) {
 		port = "5432"
 	}
 
+	sslmode := os.Getenv("POSTGRES_SSLMODE")
+	if sslmode == "" {
+		sslmode = "disable"
+	}
+
 	var config = types.PostgresConfig{
 		Username: os.Getenv("POSTGRES_USERNAME"),
 		Password: os.Getenv("POSTGRES_PASSWORD"),
 		Db:       os.Getenv("POSTGRES_DBNAME"),
-		Sslmode:  os.Getenv("POSTGRES_SSLMODE"),
+		Sslmode:  sslmode,
 		Host:     host,
 		Port:     port,
 	}

@@ -4,6 +4,9 @@ APP_NAME=url-shortener
 FRONTEND_DIR=frontend/url-shortener-frontend
 BACKEND_DIR=backend
 
+
+DOCKER_IMAGE=olymahmudmugdho/url-shortener
+
 all: clean build-frontend build-backend
 
 build-frontend:
@@ -20,6 +23,14 @@ build-backend:
 run: all
 	@echo "Running Application..."
 	cd $(BACKEND_DIR) && ./$(APP_NAME)
+
+docker-build: all
+	@echo "Building Docker Image..."
+	cd $(BACKEND_DIR) && docker build -t $(DOCKER_IMAGE) .
+
+docker-push: docker-build
+	@echo "Pushing Docker Image..."
+	docker push $(DOCKER_IMAGE)
 
 clean:
 	@echo "Cleaning..."

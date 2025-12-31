@@ -25,9 +25,11 @@ type Server struct {
 }
 
 func NewApiServer(port string) *Server {
-	err := gotenv.Load()
-	if err != nil {
-		return nil
+	if _, err := os.Stat(".env"); err == nil {
+		err := gotenv.Load()
+		if err != nil {
+			log.Println("Error loading .env file:", err)
+		}
 	}
 
 	db, _ := utils.ConnectToDatabase()
